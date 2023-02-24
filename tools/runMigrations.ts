@@ -1,3 +1,6 @@
+/*
+ * Run this file to load migrations located in ../postgres/migrations
+ */
 import { postgres } from "../deps.ts";
 import { posix } from "https://deno.land/std@0.177.0/path/mod.ts"
 import "https://deno.land/std@0.177.0/dotenv/load.ts"
