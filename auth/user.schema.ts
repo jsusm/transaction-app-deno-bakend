@@ -10,7 +10,8 @@ export const createUserSchema = z.object({
 
 export const updateUserSchema = createUserSchema.omit({
   password: true,
-});
+}).partial();
+
 export const updateUserPasswordSchema = createUserSchema.pick({
   password: true,
 });
