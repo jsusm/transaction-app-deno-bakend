@@ -1,7 +1,13 @@
 import { oak } from "../deps.ts";
 
 export interface ErrorHandler<ErrorType> {
+  /**
+   * Validate if it can handle the error
+   */
   ownError(error: Error): ErrorType | undefined;
+  /**
+   * Return proper error message
+   */
   handleError(ctx: oak.Context, error: ErrorType): void;
 }
 

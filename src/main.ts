@@ -1,11 +1,11 @@
 import "https://deno.land/std@0.177.0/dotenv/load.ts";
 import logger from "https://deno.land/x/oak_logger@1.0.0/mod.ts";
-import { oak } from "./deps.ts";
-import authRouter from "./auth/auth.router.ts";
 import {
   RedisStore,
   Session,
 } from "https://deno.land/x/oak_sessions@v4.1.0/mod.ts";
+import { oak } from "./deps.ts";
+import authRouter from "./auth/auth.router.ts";
 import { redis } from "./redis/index.ts";
 import {
   DefaultErrorHandler,
