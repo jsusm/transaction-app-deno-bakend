@@ -14,6 +14,7 @@ export class ZodErrorMiddleware implements ErrorHandler<zod.ZodError> {
     return;
   }
   handleError(ctx: oak.Context, error: zod.ZodError): void {
+    ctx.response.status = 400
     ctx.response.body = { error: this.formatError(error) }
   }
 }

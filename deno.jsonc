@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "deno run -A --watch main.ts",
+    "dev": "deno run -A --watch src/main.ts",
     "migrations:run": "deno run --allow-read --allow-env --allow-net ./tools/runMigrations.ts"
   }
 }
