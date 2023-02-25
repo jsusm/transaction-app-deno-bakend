@@ -9,10 +9,9 @@ import {
 import { redis } from "./redis/index.ts";
 import {
   DefaultErrorHandler,
-  errorMiddleware,
+  ErrorMiddleware,
 } from "./middlewares/errorMiddleware.ts";
 import { ZodErrorMiddleware } from "./middlewares/zodErrorMiddleware.ts";
-import { PostgresErrorMiddleware } from "./middlewares/postgresErrorMiddleware.ts";
 
 export type AppState = {
   session: Session;
@@ -27,9 +26,8 @@ const redisStore = new RedisStore(redis);
 app.use(Session.initMiddleware(redisStore));
 
 // Error handler
-errorMiddleware
+const errorMiddleware = new ErrorMiddleware()
   .registerErrorHandler(new DefaultErrorHandler())
-  .registerErrorHandler(new PostgresErrorMiddleware())
   .registerErrorHandler(new ZodErrorMiddleware());
 
 app.use(errorMiddleware.middleware);

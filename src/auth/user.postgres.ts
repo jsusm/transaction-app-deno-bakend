@@ -3,13 +3,13 @@ import { User, UserData, UserRepository } from "./user.model.ts";
 
 export class UserPostgresRepository implements UserRepository {
   async createUser(data: UserData): Promise<User> {
-    const connection = await pool.connect()
-    const res = await connection.queryObject<User>(
-      `INSERT INTO "users" (name, email, password) VALUES ($name, $email, $password) RETURNING id, name, email, password`,
-      data,
-    )
-    connection.release()
-    return res.rows[0]
+      const connection = await pool.connect()
+      const res = await connection.queryObject<User>(
+        `INSERT INTO "users" (name, email, password) VALUES ($name, $email, $password) RETURNING id, name, email, password`,
+        data,
+      )
+      connection.release()
+      return res.rows[0]
   }
 
   async updateUser(id: number, data: Partial<UserData>): Promise<User> {

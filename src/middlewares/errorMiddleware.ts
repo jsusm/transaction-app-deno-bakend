@@ -5,7 +5,7 @@ export interface ErrorHandler<ErrorType> {
   handleError(ctx: oak.Context, error: ErrorType): void;
 }
 
-class ErrorMiddleware {
+export class ErrorMiddleware {
   private handlers: ErrorHandler<Error>[] = [];
   /**
    * Register a error handler
@@ -46,5 +46,3 @@ export class DefaultErrorHandler implements ErrorHandler<Error> {
     ctx.response.body = { error: error.message };
   }
 }
-
-export const errorMiddleware = new ErrorMiddleware();

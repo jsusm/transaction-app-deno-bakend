@@ -1,48 +1,67 @@
-import { oak, bcrypt } from "../deps.ts";
-import { signinSchema, signupSchema } from './auth.schema.ts'
-import { UserPostgresRepository } from './user.postgres.ts'
+import { bcrypt, oak, postgres } from "../deps.ts";
+import { signinSchema, signupSchema } from "./auth.schema.ts";
+import { UserPostgresRepository } from "./user.postgres.ts";
 import { AppState } from "../main.ts";
+import { validateContentType } from "../middlewares/contentType.ts";
+import {
+  ErrorHandler,
+  ErrorMiddleware,
+} from "../middlewares/errorMiddleware.ts";
+
+class AuthPostgresErrorHandler implements ErrorHandler<postgres.PostgresError> {
+  ownError(error: Error): postgres.PostgresError | undefined {
+    if (error instanceof postgres.PostgresError) {
+      if (error.fields.code == "23505") return error;
+    }
+  }
+  handleError(ctx: oak.Context, _error: postgres.PostgresError): void {
+    ctx.response.status = oak.Status.Conflict;
+    ctx.response.body = { error: "Email is already in use" };
+  }
+}
 
 const router = new oak.Router<AppState>({
-  prefix: "/auth"
-})
+  prefix: "/auth",
+});
 
-const userRepository = new UserPostgresRepository()
+const userRepository = new UserPostgresRepository();
 
 router
-  .post('/signup', async (ctx: oak.Context<AppState>) => {
-    ctx.assert(ctx.request.headers.get("Content-Type") === "application/json", 400)
-    const body = ctx.request.body({ type: "json" })
-    const data = signupSchema.parse(await body.value)
-    // encrypt password
-    const hashedPassword = await bcrypt.hash(data.password)
+  .post(
+    "/signup",
+    new ErrorMiddleware()
+      .registerErrorHandler(new AuthPostgresErrorHandler())
+      .middleware,
+    validateContentType,
+    async (ctx: oak.Context<AppState>) => {
+      const body = ctx.request.body({ type: "json" });
+      const data = signupSchema.parse(await body.value);
+      // encrypt password
+      const hashedPassword = await bcrypt.hash(data.password);
 
-    const user = await userRepository.createUser({...data, password: hashedPassword})
-    ctx.state.session.set("userId", user.id)
+      const user = await userRepository.createUser({
+        ...data,
+        password: hashedPassword,
+      });
+      ctx.state.session.set("userId", user.id);
 
-    const { password: _, ...res } = user
-    ctx.response.body = res
-  })
-  .post('/signin', async (ctx: oak.Context<AppState>) => {
-    ctx.assert(ctx.request.headers.get("Content-Type") === "application/json", 400)
-    const body = ctx.request.body({type:'json'})
-    const data = signinSchema.parse(await body.value)
-    const user = await userRepository.findUnique({ email: data.email })
-    if(!user){
-      ctx.response.status = 400
-      ctx.response.body = {error: "Email or password do not match."}
-      return
-    }
-    const matchPassword = await bcrypt.compare(data.password, user.password)
-    if(!matchPassword) {
-      ctx.response.status = 400
-      ctx.response.body = {erro: "Email or password do not match."}
-      return
-    }
-    ctx.state.session.set("userId", user.id)
-    const { password: _, ...res } = user
-    ctx.response.body = res
-  })
+      const { password: _, ...res } = user;
+      ctx.response.body = res;
+    },
+  )
+  .post("/signin", validateContentType, async (ctx: oak.Context<AppState>) => {
+    const body = ctx.request.body({ type: "json" });
+    const data = signinSchema.parse(await body.value);
 
+    const user = await userRepository.findUnique({ email: data.email });
+    ctx.assert(user, 400, "User and passwrod don't match");
 
-export default router
+    const matchPassword = await bcrypt.compare(data.password, user.password);
+    ctx.assert(matchPassword, 400, "User and passwrod don't match");
+
+    ctx.state.session.set("userId", user.id);
+    const { password: _, ...res } = user;
+    ctx.response.body = res;
+  });
+
+export default router;
