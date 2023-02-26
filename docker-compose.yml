@@ -11,6 +11,14 @@ services:
       - 5432:5432
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
+  postgres-test:
+    image: postgres:14
+    environment:
+      - POSTGRES_DB=transaction_app
+      - POSTGRES_USER=jsus
+      - POSTGRES_PASSWORD=randompassword
+    ports:
+      - 5431:5432
   redis:
     image: redis:7
     ports:

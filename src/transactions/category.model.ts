@@ -30,5 +30,5 @@ export interface Repository {
 
   findOne(id: number): Promise<Category | undefined>;
 
-  find(where: { categoryId?: number }): Promise<Category[]>;
+  find(where: { userId?: number }): Promise<Category[]>;
 }
