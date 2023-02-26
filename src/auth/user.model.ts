@@ -11,6 +11,6 @@ export type UserData = {
 export interface UserRepository {
   createUser(data: UserData): Promise<User>;
   updateUser(id: number, data: Partial<UserData>): Promise<User>;
-  findUnique(where: { id?: number; email?: string }): Promise<User>;
+  findUnique(where: { id?: number; email?: string }): Promise<User | undefined>;
   deleteUser(where: { id?: number; email?: string }): Promise<void>;
 }

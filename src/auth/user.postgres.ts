@@ -23,7 +23,7 @@ export class UserPostgresRepository implements UserRepository {
     return res.rows[0]
   }
   
-  async findUnique(where: { id?: number; email?: string }): Promise<User> {
+  async findUnique(where: { id?: number; email?: string }): Promise<User | undefined> {
     // make where
     const condition = Object.keys(where).map((k) => `${k}=$${k}`).join(" AND ");
     const connection = await pool.connect();
