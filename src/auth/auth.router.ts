@@ -1,7 +1,7 @@
 import { bcrypt, oak, postgres } from "../deps.ts";
 import { signinSchema, signupSchema } from "./auth.schema.ts";
 import { UserPostgresRepository } from "./user.postgres.ts";
-import { AppState } from "../main.ts";
+import { AppState } from "../app.ts";
 import { validateContentType } from "../middlewares/contentType.ts";
 import {
   ErrorHandler,
@@ -54,14 +54,18 @@ router
     const data = signinSchema.parse(await body.value);
 
     const user = await userRepository.findUnique({ email: data.email });
-    ctx.assert(user, 400, "User and passwrod don't match");
+    ctx.assert(user, 400, "User and password don't match");
 
     const matchPassword = await bcrypt.compare(data.password, user.password);
-    ctx.assert(matchPassword, 400, "User and passwrod don't match");
+    ctx.assert(matchPassword, 400, "User and password don't match");
 
     ctx.state.session.set("userId", user.id);
     const { password: _, ...res } = user;
     ctx.response.body = res;
+  })
+  .post("/logout", validateContentType, async (ctx: oak.Context<AppState>) => {
+    await ctx.state.session.deleteSession();
+    ctx.response.status = 200;
   });
 
 export default router;
