@@ -63,7 +63,7 @@ router
     const { password: _, ...res } = user;
     ctx.response.body = res;
   })
-  .post("/logout", validateContentType, async (ctx: oak.Context<AppState>) => {
+  .post("/logout", async (ctx: oak.Context<AppState>) => {
     await ctx.state.session.deleteSession();
     ctx.response.status = 200;
   });
