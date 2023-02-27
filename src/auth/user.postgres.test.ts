@@ -12,7 +12,6 @@ import { pool } from "../postgres/db.ts";
 describe({
   name: "UserPostgresRepository",
   sanitizeResources: false,
-  sanitizeOps: false,
   beforeAll: (async () => {
     // clean tables
     const client = await pool.connect();

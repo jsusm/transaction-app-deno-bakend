@@ -1,10 +1,10 @@
 import { z } from "https://deno.land/x/zod@v3.16.1/mod.ts";
 
-export interface Category {
+export type Category = {
   id: number;
   name: string;
   userId: number;
-}
+};
 
 export const createCategorySchema = z.object({
   name: z.string().min(2).max(30),
@@ -20,15 +20,12 @@ export interface CategoryRepository {
 
   update(
     data: z.infer<typeof updateCategorySchema>,
-    userId: number,
-  ): Promise<Category>;
+    where: { userId: number; id: number },
+  ): Promise<Category | undefined>;
 
-  deleteOne(
-    data: z.infer<typeof updateCategorySchema>,
-    userId: number,
-  ): Promise<void>;
+  deleteOne(where: { userId: number; id: number }): Promise<void>;
 
   findOne(id: number): Promise<Category | undefined>;
 
-  find(where: { userId?: number }): Promise<Category[]>;
+  find(where: { userId: number }): Promise<Category[]>;
 }
