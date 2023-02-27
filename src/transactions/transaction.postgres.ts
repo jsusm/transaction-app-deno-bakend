@@ -5,6 +5,7 @@ import { makeKeyPairSet } from '../lib/query.ts';
 export class TransactionPostgresRepository implements TransactionRepository {
   async findOne(id: number): Promise<Transaction | undefined> {
     const res = await runQuery<Transaction>({
+      camelcase: true,
       text: `SELECT * FROM "transactions" WHERE id=$id LIMIT 1`,
       args: { id }
     })
@@ -15,18 +16,20 @@ export class TransactionPostgresRepository implements TransactionRepository {
     const condition = makeKeyPairSet(where, { snakeCase: true, separator: " AND "})
 
     const res = await runQuery<Transaction>({
+      camelcase: true,
       text: `SELECT * FROM "transactions" WHERE ${condition}`,
       args: where
     })
     return res.rows
   }
 
-  async create(data: { ammount: number; categoryId: number; }, userId: number): Promise<Transaction> {
+  async create(data: { ammount: number; categoryId: number; }): Promise<Transaction> {
     const res = await runQuery<Transaction>({
-      text: `INSERT INTO "transactions" (ammount, categoryId)
-            VALUES ($ammount, $categoryId, $userId) 
+      camelcase: true,
+      text: `INSERT INTO "transactions" (ammount, category_id)
+            VALUES ($ammount, $categoryId) 
             RETURNING *`,
-      args: { ...data, userId}
+      args: { ...data}
     })
     return res.rows[0]
   }
@@ -34,6 +37,7 @@ export class TransactionPostgresRepository implements TransactionRepository {
   async update(data: { ammount?: number | undefined; }, id: number): Promise<Transaction> {
     const paramsToUpdate = makeKeyPairSet(data)
     const res = await runQuery<Transaction>({
+      camelcase: true,
       text: `UPDATE "transactions" SET ${paramsToUpdate} WHERE id=$id RETURNING *`,
       args: { ...data, id }
     })
@@ -41,10 +45,9 @@ export class TransactionPostgresRepository implements TransactionRepository {
   }
 
   async deleteOne(id: number): Promise<void> {
-    const res = await runQuery({
+    await runQuery({
       text: `DELETE FROM "transactions" WHERE id=$id`,
       args: { id },
     })
-    console.log(res)
   }
 }

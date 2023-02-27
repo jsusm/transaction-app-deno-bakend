@@ -17,10 +17,7 @@ export const updateTransactionSchema = createTransactionSchema.omit({
 }).partial();
 
 export interface TransactionRepository {
-  create(
-    data: z.infer<typeof createTransactionSchema>,
-    userId: number,
-  ): Promise<Transaction>;
+  create(data: z.infer<typeof createTransactionSchema>): Promise<Transaction>;
 
   update(
     data: z.infer<typeof updateTransactionSchema>,
