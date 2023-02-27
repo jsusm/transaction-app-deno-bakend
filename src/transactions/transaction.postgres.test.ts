@@ -12,7 +12,7 @@ import {
 import { TransactionPostgresRepository } from "./transaction.postgres.ts";
 import { UserPostgresRepository } from "../auth/user.postgres.ts";
 import { pool } from "../postgres/db.ts";
-import { CategoryPostgresRepository } from "./category.postgres.ts";
+import { CategoryPostgresRepository } from "../categories/category.postgres.ts";
 // import { postgres } from "../deps.ts";
 
 Deno.test({
