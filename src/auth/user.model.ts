@@ -1,4 +1,4 @@
-export interface User extends UserData {
+export type User = UserData & {
   id: number;
 }
 
