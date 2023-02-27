@@ -1,4 +1,4 @@
-import { UserPostgresRepository } from "./user.postgres.ts";
+import { UserPostgresRepository } from "../../src/auth/user.postgres.ts";
 import {
   assert,
   assertEquals,
@@ -7,7 +7,7 @@ import {
   fail,
 } from "https://deno.land/std@0.178.0/testing/asserts.ts";
 import { describe, it } from "https://deno.land/std@0.178.0/testing/bdd.ts";
-import { pool } from "../postgres/db.ts";
+import { pool } from "../../src/postgres/db.ts";
 
 describe({
   name: "UserPostgresRepository",

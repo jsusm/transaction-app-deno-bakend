@@ -10,11 +10,11 @@ import {
   assertEquals,
   fail,
 } from "https://deno.land/std@0.178.0/testing/asserts.ts";
-import { CategoryPostgresRepository } from "./category.postgres.ts";
-import { UserPostgresRepository } from "../auth/user.postgres.ts";
-import { pool } from "../postgres/db.ts";
-import { UserData } from "../auth/user.model.ts";
-import { postgres } from "../deps.ts";
+import { CategoryPostgresRepository } from "../../src/categories/category.postgres.ts";
+import { UserPostgresRepository } from "../../src/auth/user.postgres.ts";
+import { pool } from "../../src/postgres/db.ts";
+import { UserData } from "../../src/auth/user.model.ts";
+import { postgres } from "../../src/deps.ts";
 
 function dummyUserArgs() {
   let i = 0;

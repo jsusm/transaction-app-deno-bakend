@@ -9,10 +9,10 @@ import {
   assertRejects,
   fail,
 } from "https://deno.land/std@0.178.0/testing/asserts.ts";
-import { TransactionPostgresRepository } from "./transaction.postgres.ts";
-import { UserPostgresRepository } from "../auth/user.postgres.ts";
-import { pool } from "../postgres/db.ts";
-import { CategoryPostgresRepository } from "../categories/category.postgres.ts";
+import { TransactionPostgresRepository } from "../../src/transactions/transaction.postgres.ts";
+import { UserPostgresRepository } from "../../src/auth/user.postgres.ts";
+import { pool } from "../../src/postgres/db.ts";
+import { CategoryPostgresRepository } from "../../src/categories/category.postgres.ts";
 // import { postgres } from "../deps.ts";
 
 Deno.test({
@@ -94,36 +94,45 @@ Deno.test({
         if (!foundedTransaction) {
           fail("foundedTransaction should not be undefined");
         }
-        console.log({ transaction, foundedTransaction });
         assertEquals(foundedTransaction.id, transaction.id);
       },
     );
-    await t.step("Update method should return updated transaction",
-      async() => {
+    await t.step(
+      "Update method should return updated transaction",
+      async () => {
         const transaction = await transactionRepository.create({
           ammount: -2,
           categoryId: dummyCategory.id,
         });
-        const updatedTransaction = await transactionRepository.update({ammount: 2}, transaction.id)
-        assertEquals(updatedTransaction.ammount, 2)
-        assertEquals(updatedTransaction.id, transaction.id)
-      }
+        const updatedTransaction = await transactionRepository.update({
+          ammount: 2,
+        }, transaction.id);
+        assertEquals(updatedTransaction.ammount, 2);
+        assertEquals(updatedTransaction.id, transaction.id);
+      },
     );
-    await t.step("Update method should return undefined if transaction does not exists",
-      async() => {
-        const updatedTransaction = await transactionRepository.update({ammount: 2}, 100000)
-        assertEquals(updatedTransaction, undefined)
-      }
+    await t.step(
+      "Update method should return undefined if transaction does not exists",
+      async () => {
+        const updatedTransaction = await transactionRepository.update({
+          ammount: 2,
+        }, 100000);
+        assertEquals(updatedTransaction, undefined);
+      },
     );
-    await t.step("Delete method should remove inserted transaction",
-      async() => {
+    await t.step(
+      "Delete method should remove inserted transaction",
+      async () => {
         const transaction = await transactionRepository.create({
           ammount: -2,
           categoryId: dummyCategory.id,
         });
-        await transactionRepository.deleteOne(transaction.id)
-        assertEquals(await transactionRepository.findOne(transaction.id), undefined)
-      }
+        await transactionRepository.deleteOne(transaction.id);
+        assertEquals(
+          await transactionRepository.findOne(transaction.id),
+          undefined,
+        );
+      },
     );
   },
 });
