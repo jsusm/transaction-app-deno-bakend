@@ -24,15 +24,12 @@ export interface TransactionRepository {
 
   update(
     data: z.infer<typeof updateTransactionSchema>,
-    userId: number,
+    id: number,
   ): Promise<Transaction>;
 
-  deleteOne(
-    data: z.infer<typeof updateTransactionSchema>,
-    userId: number,
-  ): Promise<void>;
+  deleteOne(id: number): Promise<void>;
 
   findOne(id: number): Promise<Transaction | undefined>;
 
-  find(where: { categoryId?: number }): Promise<Transaction[]>;
+  find(where: { categoryId: number }): Promise<Transaction[]>;
 }
