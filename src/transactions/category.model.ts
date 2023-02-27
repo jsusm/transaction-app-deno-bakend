@@ -12,7 +12,7 @@ export const createCategorySchema = z.object({
 
 export const updateCategorySchema = createCategorySchema.partial();
 
-export interface Repository {
+export interface CategoryRepository {
   create(
     data: z.infer<typeof createCategorySchema>,
     userId: number,
