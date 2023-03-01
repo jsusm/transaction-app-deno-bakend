@@ -4,6 +4,7 @@ import { isAuthenticated } from "../auth/auth.middleware.ts";
 import { CategoryPostgresRepository } from "./category.postgres.ts";
 import {
   createCategorySchema,
+  paginationParams,
   updateCategorySchema,
 } from "./category.model.ts";
 
@@ -24,8 +25,15 @@ router.use(isAuthenticated);
 
 router.get("/", isAuthenticated, async (ctx) => {
   if (!ctx.state.userId) throw ctx.throw(409);
+
+  const params = paginationParams.parse({
+    limit: ctx.request.url.searchParams.get("limit") || undefined,
+    offset: ctx.request.url.searchParams.get("offset") || undefined,
+  })
+
   ctx.response.body = await categoryRepository.find({
     userId: ctx.state.userId,
+    ...params
   });
 });
 

@@ -21,10 +21,13 @@ export class CategoryPostgresRepository implements CategoryRepository {
     });
     return res.rows[0];
   }
-  async find(where: { userId: number }): Promise<Category[]> {
+  async find(where: { userId: number, limit?: number, offset?: number }): Promise<Category[]> {
+    const limitClause = where.limit ? "LIMIT $limit" : ""
+    const offsetClause = where.limit ? "OFFSET $offset" : ""
+    console.log(where)
     const res = await runQuery<Category>({
       camelcase: true,
-      text: `SELECT id, name, user_id FROM "categories" WHERE user_id=$userId`,
+      text: `SELECT id, name, user_id FROM "categories" WHERE user_id=$userId ${limitClause} ${offsetClause}`,
       args: where,
     });
     return res.rows;
