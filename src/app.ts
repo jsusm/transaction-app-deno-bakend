@@ -10,10 +10,11 @@ import {
   ErrorMiddleware,
 } from "./middlewares/errorMiddleware.ts";
 import { ZodErrorMiddleware } from "./middlewares/zodErrorMiddleware.ts";
-import authRouter from "./auth/auth.router.ts";
+import routes from "./routes.ts";
 
 export type AppState = {
   session: Session;
+  userId?: number;
 };
 
 export function bootstrapApp() {
@@ -31,8 +32,8 @@ export function bootstrapApp() {
 
   app.use(errorMiddleware.middleware);
 
-  app.use(authRouter.routes());
-  app.use(authRouter.allowedMethods());
+  app.use(routes.routes());
+  app.use(routes.allowedMethods());
   return app
 }
 
@@ -46,7 +47,6 @@ export function testApp(){
     .registerErrorHandler(new ZodErrorMiddleware());
 
   app.use(errorMiddleware.middleware);
-  app.use(authRouter.routes());
-  app.use(authRouter.allowedMethods());
+  app.use(routes.routes);
   return app
 }
