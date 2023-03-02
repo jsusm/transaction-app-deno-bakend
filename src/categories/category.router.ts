@@ -7,8 +7,10 @@ import {
   paginationParams,
   updateCategorySchema,
 } from "./category.model.ts";
+import { TransactionPostgresRepository } from "../transactions/transaction.postgres.ts";
 
 const categoryRepository = new CategoryPostgresRepository();
+const transactionRepository = new TransactionPostgresRepository();
 
 const router = new oak.Router({
   prefix: "/categories",
@@ -29,11 +31,11 @@ router.get("/", isAuthenticated, async (ctx) => {
   const params = paginationParams.parse({
     limit: ctx.request.url.searchParams.get("limit") || undefined,
     offset: ctx.request.url.searchParams.get("offset") || undefined,
-  })
+  });
 
   ctx.response.body = await categoryRepository.find({
     userId: ctx.state.userId,
-    ...params
+    ...params,
   });
 });
 
@@ -49,6 +51,17 @@ router.get("/:id", isAuthenticated, async (ctx) => {
 
   ctx.response.body = category;
 });
+
+router.get("/:id/transactions", isAuthenticated, async (ctx) => {
+  const params = paginationParams.parse({
+    limit: ctx.request.url.searchParams.get("limit") || undefined,
+    offset: ctx.request.url.searchParams.get("offset") || undefined,
+  });
+
+  const transactions = await transactionRepository.find({categoryId: parseInt(ctx.params.id), ...params})
+  ctx.response.body = transactions
+})
+
 router.post("/", isAuthenticated, async (ctx) => {
   assert(!ctx.state.userId, oak.Status.Unauthorized);
   const data = createCategorySchema.parse(
@@ -58,6 +71,7 @@ router.post("/", isAuthenticated, async (ctx) => {
   ctx.response.body = category;
   ctx.response.status = oak.Status.Created;
 });
+
 router.patch("/:id", isAuthenticated, async (ctx) => {
   assert(!ctx.state.userId, oak.Status.Unauthorized);
   const data = updateCategorySchema.parse(

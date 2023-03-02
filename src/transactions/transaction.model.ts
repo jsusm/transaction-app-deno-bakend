@@ -28,5 +28,5 @@ export interface TransactionRepository {
 
   findOne(id: number): Promise<Transaction | undefined>;
 
-  find(where: { categoryId: number }): Promise<Transaction[]>;
+  find(where: { categoryId: number, limit?: number, offset?: number }): Promise<Transaction[]>;
 }

@@ -12,12 +12,15 @@ export class TransactionPostgresRepository implements TransactionRepository {
     return res.rows[0]
   }
 
-  async find(where: { categoryId: number }): Promise<Transaction[]> {
+  async find(where: { categoryId: number, limit?: number, offset?: number }): Promise<Transaction[]> {
     const condition = makeKeyPairSet(where, { snakeCase: true, separator: " AND "})
+
+    const limitClause = where.limit ? "LIMIT $limit" : ""
+    const offsetClause = where.limit ? "OFFSET $offset" : ""
 
     const res = await runQuery<Transaction>({
       camelcase: true,
-      text: `SELECT * FROM "transactions" WHERE ${condition}`,
+      text: `SELECT * FROM "transactions" WHERE ${condition} ${limitClause} ${offsetClause}`,
       args: where
     })
     return res.rows
