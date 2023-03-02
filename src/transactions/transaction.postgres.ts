@@ -53,4 +53,13 @@ export class TransactionPostgresRepository implements TransactionRepository {
       args: { id },
     })
   }
+  async getTotal(where: { categoryId: number; }): Promise<number> {
+    const condition = makeKeyPairSet(where, { snakeCase: true, separator: " AND "})
+    const res = await runQuery<{sum: bigint}>({
+      text: `SELECT sum(ammount) FROM "transactions" WHERE ${condition}`,
+      args: where,
+      fields: ['sum']
+    })
+    return Number(res.rows[0].sum)
+  }
 }

@@ -134,5 +134,23 @@ Deno.test({
         );
       },
     );
+    await t.step(
+      "getTotal method should return the sum of ammount of the transactions",
+      async () => {
+        const category = await categoryRepository.create({
+          name: "getTotal test",
+        }, dummyUser.id);
+        const ammounts = [ 1, 3, -2, 5]
+        // Create transactions
+        await Promise.all(ammounts.map(x => transactionRepository.create({
+          ammount: x,
+          categoryId: category.id,
+        })))
+        const expectedTotal = ammounts.reduce((acc, x) => acc+x, 0)
+
+        const total = await transactionRepository.getTotal({categoryId: category.id})
+        assertEquals(total, expectedTotal)
+      },
+    );
   },
 });
