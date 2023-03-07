@@ -11,6 +11,7 @@ import {
 } from "./middlewares/errorMiddleware.ts";
 import { ZodErrorMiddleware } from "./middlewares/zodErrorMiddleware.ts";
 import routes from "./routes.ts";
+import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";
 
 export type AppState = {
   session: Session;
@@ -23,7 +24,17 @@ export function bootstrapApp() {
 
   app.use(logger.logger);
   app.use(logger.responseTime);
-  app.use(Session.initMiddleware(redisStore));
+  app.use(Session.initMiddleware(redisStore, {
+    cookieSetOptions: {
+      httpOnly: true,
+      sameSite: "strict",
+    }
+  }));
+  app.use(oakCors({
+    origin: "http://localhost:5173",
+    methods: 'GET,POST,PATCH,OPTIONS,DELETE',
+    credentials: true,
+  }))
 
   // Error handler
   const errorMiddleware = new ErrorMiddleware()

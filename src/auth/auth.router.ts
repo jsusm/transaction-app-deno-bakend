@@ -47,6 +47,7 @@ router
 
       const { password: _, ...res } = user;
       ctx.response.body = res;
+      ctx.response.status = 201;
     },
   )
   .post("/signin", validateContentType, async (ctx: oak.Context<AppState>) => {
