@@ -46,6 +46,7 @@ export class DefaultErrorHandler implements ErrorHandler<Error> {
     return error;
   }
   handleError(ctx: oak.Context, error: Error): void {
+    ctx.response.status = 500;
     if (oak.isHttpError(error)) {
       ctx.response.status = error.status;
     }

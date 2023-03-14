@@ -58,15 +58,21 @@ router.get("/:id/transactions", isAuthenticated, async (ctx) => {
     offset: ctx.request.url.searchParams.get("offset") || undefined,
   });
 
-  const transactions = await transactionRepository.find({categoryId: parseInt(ctx.params.id), ...params})
-  const total = await transactionRepository.getTotal({ categoryId: parseInt(ctx.params.id)})
-  ctx.response.body = { transactions, total }
-})
+  const transactions = await transactionRepository.find({
+    categoryId: parseInt(ctx.params.id),
+  }, { ...params });
+  const total = await transactionRepository.getTotal({
+    categoryId: parseInt(ctx.params.id),
+  });
+  ctx.response.body = { transactions, total };
+});
 
 router.post("/", isAuthenticated, async (ctx) => {
   assert(!ctx.state.userId, oak.Status.Unauthorized);
+  const body = await ctx.request.body({ type: "json" }).value;
+  console.log(body);
   const data = createCategorySchema.parse(
-    await ctx.request.body({ type: "json" }).value,
+    body,
   );
   const category = await categoryRepository.create(data, ctx.state.userId || 0);
   ctx.response.body = category;

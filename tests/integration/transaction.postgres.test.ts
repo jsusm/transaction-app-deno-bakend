@@ -70,7 +70,8 @@ Deno.test({
         });
         const transactions = await transactionRepository.find({
           categoryId: dummyCategory.id,
-        });
+        }, { limit: undefined, offset: undefined} );
+        console.log({transactions})
         assertArrayIncludes(transactions, [transaction]);
       },
     );

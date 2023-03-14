@@ -1,7 +1,7 @@
 {
   "tasks": {
     "dev": "deno run -A --watch src/main.ts",
-    "test:integration": "TESTING=true deno test -A tests/integration/",
+    "test:integration": "TESTING=true deno test -A --trace-ops tests/integration/",
     "test:unit": "TESTING=true deno test -A tests/unit/",
     "migrations:run": "deno run --allow-read --allow-env --allow-net ./src/tools/runMigrations.ts",
   }
