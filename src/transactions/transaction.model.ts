@@ -31,4 +31,6 @@ export interface TransactionRepository {
   find(where: { categoryId: number}, params: { limit?: number, offset?: number }): Promise<Transaction[]>;
 
   getTotal(where: { categoryId: number }): Promise<number>
+
+  getTotalRecords(where: { categoryId: number }): Promise<number>,
 }

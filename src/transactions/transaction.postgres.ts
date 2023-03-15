@@ -62,4 +62,14 @@ export class TransactionPostgresRepository implements TransactionRepository {
     })
     return Number(res.rows[0].sum)
   }
+  async getTotalRecords(where: { categoryId: number; }): Promise<number> {
+    const condition = makeKeyPairSet(where, { snakeCase: true, separator: " AND "})
+    const res = await runQuery<{count: bigint}>({
+      text: `SELECT count(*) FROM "transactions" WHERE ${condition}`,
+      args: where,
+      fields: ['count']
+    })
+    console.log(res)
+    return Number(res.rows[0].count)
+  }
 }

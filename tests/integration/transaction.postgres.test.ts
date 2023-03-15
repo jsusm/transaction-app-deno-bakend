@@ -169,5 +169,22 @@ Deno.test({
         assertEquals(total, expectedTotal)
       },
     );
+    await t.step(
+      "getTotalRecords method should return the count of transactions for a category",
+      async () => {
+        const category = await categoryRepository.create({
+          name: "getTotal test",
+        }, dummyUser.id);
+        const ammounts = [ 1, 3, -2, 5]
+        // Create transactions
+        await Promise.all(ammounts.map(x => transactionRepository.create({
+          ammount: x,
+          categoryId: category.id,
+        })))
+        const expected = ammounts.length
+        const totalRecords = await transactionRepository.getTotalRecords({categoryId: category.id})
+        assertEquals(totalRecords, expected)
+      },
+    );
   },
 });
