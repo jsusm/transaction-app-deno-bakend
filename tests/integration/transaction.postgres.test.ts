@@ -62,7 +62,7 @@ Deno.test({
       assert(transactions instanceof Array);
     });
     await t.step(
-      "Find method should result should contain inserted transaction",
+      "Find method should contain inserted transaction",
       async () => {
         const transaction = await transactionRepository.create({
           ammount: -2,
@@ -71,8 +71,24 @@ Deno.test({
         const transactions = await transactionRepository.find({
           categoryId: dummyCategory.id,
         }, { limit: undefined, offset: undefined} );
-        console.log({transactions})
         assertArrayIncludes(transactions, [transaction]);
+      },
+    );
+    await t.step(
+      "Find method should result set of transactions with length of limit parameter",
+      async () => {
+        const category = await categoryRepository.create({
+          name: "getTotal test",
+        }, dummyUser.id);
+        const ammounts = [ 1, 3, -2, 5]
+        // Create transactions
+        await Promise.all(ammounts.map(x => transactionRepository.create({
+          ammount: x,
+          categoryId: category.id,
+        })))
+        const transactionList = await transactionRepository.find({categoryId: category.id}, {limit: 2} )
+        console.log({transactionList})
+        assertEquals(transactionList.length, 2)
       },
     );
     await t.step(
