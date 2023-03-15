@@ -21,7 +21,7 @@ export class TransactionPostgresRepository implements TransactionRepository {
     const res = await runQuery<Transaction>({
       camelcase: true,
       text: `SELECT * FROM "transactions" WHERE ${condition} ${limitClause} ${offsetClause}`,
-      args: where
+      args: {...where, ...params}
     })
     return res.rows
   }
