@@ -58,13 +58,17 @@ router.get("/:id/transactions", isAuthenticated, async (ctx) => {
     offset: ctx.request.url.searchParams.get("offset") || undefined,
   });
 
+  // TODO make all queries concurrent
   const transactions = await transactionRepository.find({
     categoryId: parseInt(ctx.params.id),
   }, { ...params });
   const total = await transactionRepository.getTotal({
     categoryId: parseInt(ctx.params.id),
   });
-  ctx.response.body = { transactions, total };
+  const recordCount = await transactionRepository.getTotalRecords({
+    categoryId: parseInt(ctx.params.id)
+  })
+  ctx.response.body = { transactions, total, recordCount };
 });
 
 router.post("/", isAuthenticated, async (ctx) => {
