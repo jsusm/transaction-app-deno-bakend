@@ -69,7 +69,6 @@ export class TransactionPostgresRepository implements TransactionRepository {
       args: where,
       fields: ['count']
     })
-    console.log(res)
     return Number(res.rows[0].count)
   }
 }

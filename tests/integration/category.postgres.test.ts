@@ -5,9 +5,9 @@ import { describe, it } from "https://deno.land/std@0.178.0/testing/bdd.ts";
 import {
   assert,
   assertArrayIncludes,
+  assertEquals,
   assertObjectMatch,
   assertRejects,
-  assertEquals,
   fail,
 } from "https://deno.land/std@0.178.0/testing/asserts.ts";
 import { CategoryPostgresRepository } from "../../src/categories/category.postgres.ts";
@@ -113,10 +113,10 @@ describe({
       assert(updatedCategory == undefined);
     });
     it("delete method should delete existent category", async () => {
-      const user = await userRepository.createUser(dummyUser())
-      const category = await repository.create({ name: "Category"}, user.id)
-      await repository.deleteOne({userId: user.id, id: category.id})
-      assertEquals(await repository.findOne(category.id), undefined)
-    })
+      const user = await userRepository.createUser(dummyUser());
+      const category = await repository.create({ name: "Category" }, user.id);
+      await repository.deleteOne({ userId: user.id, id: category.id });
+      assertEquals(await repository.findOne(category.id), undefined);
+    });
   },
 });

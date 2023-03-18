@@ -87,7 +87,6 @@ Deno.test({
           categoryId: category.id,
         })))
         const transactionList = await transactionRepository.find({categoryId: category.id}, {limit: 2} )
-        console.log({transactionList})
         assertEquals(transactionList.length, 2)
       },
     );
