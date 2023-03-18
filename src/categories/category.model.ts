@@ -10,7 +10,7 @@ export type Category = {
 export const paginationParams = z.object({
   limit: z.coerce.number().int().gt(0).optional(),
   offset: z.coerce.number().int().gt(-1).optional(),
-})
+});
 
 export const createCategorySchema = z.object({
   name: z.string().min(2).max(30),
@@ -33,5 +33,7 @@ export interface CategoryRepository {
 
   findOne(id: number): Promise<Category | undefined>;
 
-  find(where: { userId: number, limit?: number, offset?: number }): Promise<Category[]>;
+  find(
+    where: { userId: number; limit?: number; offset?: number },
+  ): Promise<Category[]>;
 }

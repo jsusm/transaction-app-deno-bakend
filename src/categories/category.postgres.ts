@@ -21,12 +21,15 @@ export class CategoryPostgresRepository implements CategoryRepository {
     });
     return res.rows[0];
   }
-  async find(where: { userId: number, limit?: number, offset?: number }): Promise<Category[]> {
-    const limitClause = where.limit ? "LIMIT $limit" : ""
-    const offsetClause = where.limit ? "OFFSET $offset" : ""
+  async find(
+    where: { userId: number; limit?: number; offset?: number },
+  ): Promise<Category[]> {
+    const limitClause = where.limit ? "LIMIT $limit" : "";
+    const offsetClause = where.limit ? "OFFSET $offset" : "";
     const res = await runQuery<Category>({
       camelcase: true,
-      text: `SELECT id, name, user_id FROM "categories" WHERE user_id=$userId ${limitClause} ${offsetClause}`,
+      text:
+        `SELECT id, name, user_id FROM "categories" WHERE user_id=$userId ${limitClause} ${offsetClause}`,
       args: where,
     });
     return res.rows;
@@ -50,14 +53,14 @@ export class CategoryPostgresRepository implements CategoryRepository {
     });
     return res.rows[0];
   }
-  async deleteOne(where: { userId: number; id: number; }): Promise<void> {
+  async deleteOne(where: { userId: number; id: number }): Promise<void> {
     const condition = makeKeyPairSet(where, {
       snakeCase: true,
       separator: " AND ",
     });
     await runQuery({
       text: `DELETE FROM "categories" WHERE ${condition}`,
-      args: where
-    })
+      args: where,
+    });
   }
 }

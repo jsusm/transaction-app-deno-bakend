@@ -66,8 +66,8 @@ router.get("/:id/transactions", isAuthenticated, async (ctx) => {
     categoryId: parseInt(ctx.params.id),
   });
   const recordCount = await transactionRepository.getTotalRecords({
-    categoryId: parseInt(ctx.params.id)
-  })
+    categoryId: parseInt(ctx.params.id),
+  });
   ctx.response.body = { transactions, total, recordCount };
 });
 

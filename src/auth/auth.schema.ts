@@ -1,4 +1,4 @@
-import { createUserSchema } from './user.schema.ts'
+import { createUserSchema } from "./user.schema.ts";
 
-export const signupSchema = createUserSchema
-export const signinSchema = createUserSchema.omit({ name: true })
+export const signupSchema = createUserSchema;
+export const signinSchema = createUserSchema.omit({ name: true });
