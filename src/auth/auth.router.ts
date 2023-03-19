@@ -67,6 +67,14 @@ router
   .post("/logout", async (ctx: oak.Context<AppState>) => {
     await ctx.state.session.deleteSession();
     ctx.response.status = 200;
+  })
+  .get("/state", async (ctx: oak.Context<AppState>) => {
+    if(!ctx.state.userId) ctx.throw(401)
+    const user = await userRepository.findUnique({ id: ctx.state.userId })
+    if(!user) {
+      ctx.throw(401)
+    }
+    ctx.response.body = user
   });
 
 export default router;

@@ -31,7 +31,7 @@ export function bootstrapApp() {
     }
   }));
   app.use(oakCors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://localhost:4173"],
     methods: 'GET,POST,PATCH,OPTIONS,DELETE',
     credentials: true,
   }))

@@ -26,7 +26,7 @@ function assert(condition: boolean, status: number, message?: string) {
 router.use(isAuthenticated);
 
 router.get("/", isAuthenticated, async (ctx) => {
-  if (!ctx.state.userId) throw ctx.throw(409);
+  if (!ctx.state.userId) throw ctx.throw(401);
 
   const params = paginationParams.parse({
     limit: ctx.request.url.searchParams.get("limit") || undefined,
