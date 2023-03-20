@@ -7,6 +7,7 @@ import {
   ErrorHandler,
   ErrorMiddleware,
 } from "../middlewares/errorMiddleware.ts";
+import { isAuthenticated } from "./auth.middleware.ts";
 
 class AuthPostgresErrorHandler implements ErrorHandler<postgres.PostgresError> {
   ownError(error: Error): postgres.PostgresError | undefined {
@@ -68,7 +69,7 @@ router
     await ctx.state.session.deleteSession();
     ctx.response.status = 200;
   })
-  .get("/state", async (ctx: oak.Context<AppState>) => {
+  .get("/state", isAuthenticated, async (ctx: oak.Context<AppState>) => {
     if(!ctx.state.userId) ctx.throw(401)
     const user = await userRepository.findUnique({ id: ctx.state.userId })
     if(!user) {
