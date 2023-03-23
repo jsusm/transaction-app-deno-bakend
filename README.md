@@ -4,7 +4,7 @@ This is a simple project that implements cookie base authentication, and base cr
 
 ### Run the project
 
-The server need a url connection to a postgres database and a redis
+The server needs an url connection to a postgres database and a redis,
 the url is configured through environment variables (see .env.example file)
 
 To run this in local turn on the postgres database and redis with docker compose
@@ -14,7 +14,7 @@ docker compose up -d redis
 ```
 
 I've implemented a basic migration runner (see src/tools/runMigrations.ts)
-this script runs the sql files under src/postgres/migrations/ directory.
+this script runs sql files under src/postgres/migrations/ directory.
 To run the migrations exec the following command
 ```bash
 deno task migrations:run
